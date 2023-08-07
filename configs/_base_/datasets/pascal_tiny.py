@@ -1,6 +1,6 @@
 # dataset settings
 dataset_type = 'CocoDataset'
-data_root = '/home/kprokofi/datasets/pascal_tiny/coco'
+data_root = '/home/kprokofi/datasets/pascal_tiny/coco_otx/'
 
 # Example to use different file client
 # Method 1: simply set the data root and let the file I/O module
@@ -20,17 +20,18 @@ backend_args = None
 train_pipeline = [
     dict(type='LoadImageFromFile', backend_args=backend_args),
     dict(
-        type='LoadAnnotations', with_bbox=True, with_mask=True, with_seg=True),
-    dict(type='Resize', scale=(1333, 800), keep_ratio=True),
+        type='LoadAnnotations', with_bbox=True, with_mask=True),
+    dict(type='Resize', scale=(1344, 800), keep_ratio=False),
     dict(type='RandomFlip', prob=0.5),
     dict(type='PackDetInputs')
 ]
+
 test_pipeline = [
     dict(type='LoadImageFromFile', backend_args=backend_args),
-    dict(type='Resize', scale=(1333, 800), keep_ratio=True),
+    dict(type='Resize', scale=(1344, 800), keep_ratio=False),
     # If you don't have a gt annotation, delete the pipeline
     dict(
-        type='LoadAnnotations', with_bbox=True, with_mask=True, with_seg=True),
+        type='LoadAnnotations', with_bbox=True, with_mask=True),
     dict(
         type='PackDetInputs',
         meta_keys=('img_id', 'img_path', 'ori_shape', 'img_shape',
@@ -47,7 +48,7 @@ train_dataloader = dict(
         type=dataset_type,
         data_root=data_root,
         ann_file='annotations/instances_train.json',
-        data_prefix=dict(img='train/'),
+        data_prefix=dict(img='images/train/'),
         filter_cfg=dict(filter_empty_gt=True, min_size=32),
         pipeline=train_pipeline,
         backend_args=backend_args))
@@ -62,7 +63,7 @@ val_dataloader = dict(
         type=dataset_type,
         data_root=data_root,
         ann_file='annotations/instances_val.json',
-        data_prefix=dict(img='val/'),
+        data_prefix=dict(img='images/val/'),
         test_mode=True,
         pipeline=test_pipeline,
         backend_args=backend_args))
